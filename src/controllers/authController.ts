@@ -17,6 +17,18 @@ class AuthController implements IAuthController {
         try {
             const { email, password } = req.body;
 
+            if (!email) {
+                throw new BadRequestException("Email is required");
+            }
+
+            if (!validateEmail(email)) {
+                throw new BadRequestException("Invalid email");
+            }
+
+            if (!password) {
+                throw new BadRequestException("Password is required");
+            }
+
             const user = await this.authService.userLogin(email, password) as {
                 username: string,
                 email: string,

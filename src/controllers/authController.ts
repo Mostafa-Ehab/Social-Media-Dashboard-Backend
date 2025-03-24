@@ -44,15 +44,12 @@ class AuthController implements IAuthController {
 
     registerController = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
         try {
-            const { firstname, lastname, email, password } = req.body;
+            const { username, email, password } = req.body;
 
-            if (!firstname) {
+            if (!username) {
                 throw new BadRequestException("First name is required");
             }
 
-            if (!lastname) {
-                throw new BadRequestException("Last name is required");
-            }
 
             if (!email) {
                 throw new BadRequestException("Email is required");
@@ -67,8 +64,7 @@ class AuthController implements IAuthController {
             }
 
             const newUser = {
-                firstname,
-                lastname,
+               username,
                 email,
                 password
             } as IUser;

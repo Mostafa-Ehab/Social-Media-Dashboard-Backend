@@ -8,6 +8,7 @@ import { NextFunction } from 'express';
 import { NotFoundException } from './exceptions/notFoundException';
 import configureDI from './config/di';
 import cors from 'cors';
+import { analyticsRoute } from './routes/analyticsRoute';
 
 dotenv.config();
 connectDB();
@@ -28,6 +29,11 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/auth', authRoute(
     container.get('authController'), container.get('authMiddleware')
+));
+
+app.use('/api/analytics', analyticsRoute(
+    container.get('analyticsController'),
+    container.get('authMiddleware')
 ));
 
 app.get('*', (req: Request, res: Response) => {

@@ -64,7 +64,7 @@ class AuthController implements IAuthController {
             }
 
             const newUser = {
-               username,
+                username,
                 email,
                 password
             } as IUser;
@@ -80,10 +80,9 @@ class AuthController implements IAuthController {
 
     refreshTokenController = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
         try {
-            const { refreshToken } = req.body;
-            const { userId, companyId } = req.params;
+            const { refreshToken, userId } = req.body;
 
-            const data = await this.authService.refreshToken(refreshToken, userId, companyId);
+            const data = await this.authService.refreshToken(refreshToken, userId);
 
             return res.status(200).send(data);
         } catch (err) {

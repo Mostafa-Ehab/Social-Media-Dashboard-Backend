@@ -8,7 +8,7 @@ export interface IUser {
     password: string;
     refreshToken?: string[];
     profile?: string;
-    passwordMatch(password: string): Promise<Boolean>;
+    passwordMatch(password: string): Promise<boolean>;
 };
 
 export const userSchema = new mongoose.Schema<IUser>(

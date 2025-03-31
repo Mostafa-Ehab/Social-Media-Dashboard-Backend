@@ -7,6 +7,7 @@ export function authRoute(authController: IAuthController, authMiddleware: IAuth
 
     router.post("/register", authController.registerController);
     router.post("/login", authController.loginController);
+    router.post("/refresh-token", authController.refreshTokenController);
 
     return router;
 }

@@ -21,7 +21,6 @@ class AuthMiddleware implements IAuthMiddleware {
                         ) as { userId: string, companyId: string | null }
                         req.user = await this.userRepository.getUserById(user.userId)
 
-
                         return next();
                     } catch (err) {
                         if (err instanceof JWT.TokenExpiredError) {

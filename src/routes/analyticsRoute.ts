@@ -6,7 +6,6 @@ export function analyticsRoute(analyticsController: IAnalyticsController, authMi
     const router = express.Router();
 
     router.get("/", authMiddleware.loginRequired, analyticsController.getAnalytics);
-    router.get("/platforms", authMiddleware.loginRequired, analyticsController.getPlatforms);
     router.get("/stats", authMiddleware.loginRequired, analyticsController.getStats);
 
     return router;

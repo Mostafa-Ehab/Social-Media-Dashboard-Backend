@@ -13,7 +13,7 @@ export interface IAuthService {
         refreshToken: string;
     }>;
     userRegister(user: IUser): Promise<IUser>;
-    refreshToken(refreshToken: string, userId: string, companyId: string | null): Promise<{
+    refreshToken(refreshToken: string, userId: string): Promise<{
         accessToken: string;
         refreshToken: string;
     }>;
@@ -70,7 +70,7 @@ class AuthService implements IAuthService {
         return user;
     }
 
-    async refreshToken(refreshToken: string, userId: string, companyId: string | null): Promise<{
+    async refreshToken(refreshToken: string, userId: string): Promise<{
         accessToken: string;
         refreshToken: string;
     }> {
@@ -83,7 +83,7 @@ class AuthService implements IAuthService {
             throw new UnauthorizedException("Invalid refresh token");
         }
 
-        const newAccessToken = generateAccessToken(String(user.id), companyId);
+        const newAccessToken = generateAccessToken(String(user.id));
         const newRefreshToken = generateRefreshToken(String(user.id));
 
         await this.userRepository.updateUserById(String(user.id), {

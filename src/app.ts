@@ -9,6 +9,7 @@ import { NotFoundException } from './exceptions/notFoundException';
 import configureDI from './config/di';
 import cors from 'cors';
 import { analyticsRoute } from './routes/analyticsRoute';
+import { platformsRoute } from './routes/platformsRoute';
 
 dotenv.config();
 connectDB();
@@ -21,10 +22,10 @@ const app = express();
 app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json());
-
+app.use('/public', express.static('public'));
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, TypeScript Express!');
+    res.send('Hello, Express!');
 });
 
 app.use('/api/auth', authRoute(
@@ -35,6 +36,11 @@ app.use('/api/analytics', analyticsRoute(
     container.get('analyticsController'),
     container.get('authMiddleware')
 ));
+
+app.use('/api/platforms', platformsRoute(
+    container.get('platformController'),
+    container.get('authMiddleware')
+))
 
 app.get('*', (req: Request, res: Response) => {
     throw new NotFoundException('Route not found');

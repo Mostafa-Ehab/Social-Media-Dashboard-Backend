@@ -29,8 +29,8 @@ export default function configureDI(): IDIContainer<{
             new AuthService(userRepository)
         )
         .add(
-            'analyticsService', ({ platformRepository }): IAnalyticsService =>
-            new AnalyticsService(platformRepository)
+            'analyticsService', ({ userPlatformRepository }): IAnalyticsService =>
+            new AnalyticsService(userPlatformRepository)
         )
         .add(
             'platformService', ({ platformRepository, userPlatformRepository }): IPlatformService =>

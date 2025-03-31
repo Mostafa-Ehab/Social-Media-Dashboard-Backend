@@ -1,18 +1,30 @@
 import { BadRequestException } from "../exceptions/badRequestException";
-import { IPlatformRepository } from "../repositories/platformRepository";
-import { generateRandomData } from "../utils/analyticsUtils";
+import { UnauthorizedException } from "../exceptions/unauthorizedException";
+import { IUserPlatformRepository } from "../repositories/userPlatformRepository";
+import { generateRandomData, generateRandomNumber } from "../utils/analyticsUtils";
 
 export interface IAnalyticsService {
-    getAnalytics(userId: string, platform: string): Promise<any>;
-    getStats(userId: string, platform: string): Promise<any>;
+    getAnalytics(userId: string, platformId: string): Promise<any>;
+    getStats(userId: string, platformId: string): Promise<any>;
 }
 
 class AnalyticsService implements IAnalyticsService {
-    constructor(private readonly platformRepository: IPlatformRepository) { }
+    constructor(
+        private readonly userPlatformRepository: IUserPlatformRepository
+    ) { }
 
-    getAnalytics = async (userId: string, platform: string): Promise<any> => {
-        if (!platform) {
+    getAnalytics = async (userId: string, platformId: string): Promise<any> => {
+        if (!platformId) {
             throw new BadRequestException("Platform is required");
+        }
+
+        const platform = await this.userPlatformRepository.getUserPlatformById(platformId);
+        if (!platform) {
+            throw new BadRequestException("Platform not found");
+        }
+
+        if (String(platform.userId) !== userId) {
+            throw new UnauthorizedException("Unauthorized");
         }
 
         const chartData = generateRandomData(10);
@@ -23,16 +35,29 @@ class AnalyticsService implements IAnalyticsService {
         };
 
         return {
-            platform: platform,
+            platform: platform.platform.name,
             summary: summary,
             chart_data: chartData
         }
     }
-    getStats = async (userId: string, platform: string): Promise<any> => {
+    getStats = async (userId: string, platformId: string): Promise<any> => {
+        if (!platformId) {
+            throw new BadRequestException("Platform is required");
+        }
+
+        const platform = await this.userPlatformRepository.getUserPlatformById(platformId);
+        if (!platform) {
+            throw new BadRequestException("Platform not found");
+        }
+
+        if (String(platform.userId) !== userId) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+
         return {
-            likes: 3400,
-            shares: 1200,
-            comments: 850
+            likes: generateRandomNumber(100, 600),
+            shares: generateRandomNumber(50, 250),
+            comments: generateRandomNumber(30, 180)
         }
     }
 }

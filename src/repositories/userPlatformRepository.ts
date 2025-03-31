@@ -16,7 +16,9 @@ class UserPlatformRepository implements IUserPlatformRepository {
     }
 
     async getUserPlatformById(platformId: string): Promise<IUserPlatform | null> {
-        return await userPlatformModel.findById(platformId).exec();
+        return await userPlatformModel.findById(platformId)
+            .populate("platform")
+            .exec();
     }
 
     async addUserPlatform(userId: string, platformId: string, token: string): Promise<IUserPlatform> {

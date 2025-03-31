@@ -11,9 +11,9 @@ class AnalyticsController implements IAnalyticsController {
 
     getAnalytics = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
         try {
-            const { userId } = req.params;
-            const { platform } = req.query;
-            const analytics = await this.analyticsService.getAnalytics(userId, platform as string);
+            const { platformId } = req.params;
+            const userId = String(req.user.id);
+            const analytics = await this.analyticsService.getAnalytics(userId, platformId);
             return res.status(200).send(analytics);
         } catch (err) {
             next(err);
@@ -21,8 +21,9 @@ class AnalyticsController implements IAnalyticsController {
     }
     getStats = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
         try {
-            const { userId, platform } = req.params;
-            const stats = await this.analyticsService.getStats(userId, platform);
+            const { platformId } = req.params;
+            const userId = String(req.user.id);
+            const stats = await this.analyticsService.getStats(userId, platformId);
             return res.status(200).send(stats);
         } catch (err) {
             next(err);

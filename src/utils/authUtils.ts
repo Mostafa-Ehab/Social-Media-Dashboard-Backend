@@ -1,5 +1,6 @@
 import JWT, { Secret, JsonWebTokenError } from "jsonwebtoken";
 import { UnauthorizedException } from "../exceptions/unauthorizedException";
+import bcrypt from 'bcryptjs';
 
 export const generateAccessToken = (userId: string, companyId: string | null = null) => {
     if (process.env.JWT_SECRET) {
@@ -40,6 +41,11 @@ export const generateRefreshToken = (userId: string) => {
 
     throw new Error("Can't find JWT_SECRET");
 };
+
+export const hashPassword = async (password: string) => {
+    const saltRounds = Number(process.env.PASSWORD_SALT || 10);
+    return await bcrypt.hash(password, saltRounds);
+}
 
 export const validateEmail = (email: String) => {
     return email.match(

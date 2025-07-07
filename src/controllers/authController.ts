@@ -7,6 +7,7 @@ import { validateEmail } from "../utils/authUtils";
 export interface IAuthController {
     registerController(req: Request, res: Response, next: NextFunction): Promise<any>;
     loginController(req: Request, res: Response, next: NextFunction): Promise<any>;
+    changePasswordController(req: Request, res: Response, next: NextFunction): Promise<any>;
     refreshTokenController(req: Request, res: Response, next: NextFunction): Promise<any>;
 }
 
@@ -15,7 +16,10 @@ class AuthController implements IAuthController {
 
     loginController = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
         try {
-            const { email, password } = req.body;
+            const {
+                email = String(req.body.email).toLowerCase().trim(),
+                password
+            } = req.body;
 
             if (!email) {
                 throw new BadRequestException("Email is required");
@@ -65,7 +69,7 @@ class AuthController implements IAuthController {
 
             const newUser = {
                 username,
-                email,
+                email: String(email).toLowerCase().trim(),
                 password
             } as IUser;
 
@@ -77,6 +81,32 @@ class AuthController implements IAuthController {
             next(err);
         }
     }
+
+    changePasswordController = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+        try {
+            const { oldPassword, newPassword, refreshToken } = req.body;
+            const user = req.user as IUser;
+
+            if (!oldPassword) {
+                throw new BadRequestException("Old password is required");
+            }
+
+            if (!newPassword) {
+                throw new BadRequestException("New password is required");
+            }
+
+            if (oldPassword === newPassword) {
+                throw new BadRequestException("Old password and new password cannot be the same");
+            }
+
+            const data = await this.authService.changePassword(user, oldPassword, newPassword, refreshToken);
+
+            return res.status(200).send(data);
+        } catch (err) {
+            next(err);
+        }
+    }
+
 
     refreshTokenController = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
         try {

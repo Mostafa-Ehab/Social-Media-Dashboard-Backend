@@ -10,9 +10,12 @@ import PlatformRepository, { IPlatformRepository } from '../repositories/platfor
 import UserPlatformRepository, { IUserPlatformRepository } from '../repositories/userPlatformRepository';
 import PlatformService, { IPlatformService } from '../services/platformService';
 import PlatformController, { IPlatformController } from '../controllers/platformController';
+import UserService, { IUserService } from '../services/userService';
+import UserController, { IUserController } from '../controllers/userController';
 
 export default function configureDI(): IDIContainer<{
     authController: IAuthController;
+    userController: IUserController;
     authMiddleware: IAuthMiddleware;
     analyticsController: IAnalyticsController;
     platformController: IPlatformController;
@@ -27,6 +30,10 @@ export default function configureDI(): IDIContainer<{
         .add(
             'authService', ({ userRepository }): IAuthService =>
             new AuthService(userRepository)
+        )
+        .add(
+            'userService', ({ userRepository }): IUserService =>
+            new UserService(userRepository)
         )
         .add(
             'analyticsService', ({ userPlatformRepository }): IAnalyticsService =>
@@ -47,6 +54,10 @@ export default function configureDI(): IDIContainer<{
         .add(
             'authController', ({ authService }): IAuthController =>
             new AuthController(authService)
+        )
+        .add(
+            'userController', ({ userService, authMiddleware }): IUserController =>
+            new UserController(userService)
         )
         .add(
             'analyticsController', ({ analyticsService }): IAnalyticsController =>

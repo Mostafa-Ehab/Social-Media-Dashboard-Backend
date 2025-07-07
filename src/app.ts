@@ -10,6 +10,7 @@ import configureDI from './config/di';
 import cors from 'cors';
 import { analyticsRoute } from './routes/analyticsRoute';
 import { platformsRoute } from './routes/platformsRoute';
+import userRoute from './routes/userRoute';
 
 dotenv.config();
 connectDB();
@@ -30,6 +31,11 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/auth', authRoute(
     container.get('authController'), container.get('authMiddleware')
+));
+
+app.use('/api/users', userRoute(
+    container.get('userController'),
+    container.get('authMiddleware')
 ));
 
 app.use('/api/analytics', analyticsRoute(

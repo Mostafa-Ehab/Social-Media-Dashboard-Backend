@@ -40,7 +40,7 @@ class UserRepository implements IUserRepository {
 
     async updateUserById(id: string, userData: Partial<IUser>): Promise<IUser | null> {
         return await UserModel
-            .findByIdAndUpdate(id, userData, { new: true });
+            .findByIdAndUpdate(id, userData, { new: true, runValidators: true });
     }
 }
 

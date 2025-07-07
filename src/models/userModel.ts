@@ -44,16 +44,6 @@ userSchema.methods.passwordMatch = async function (enteredPassword: string) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Hash password on save
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        next();
-    } else {
-        const saltRounds = Number(process.env.PASSWORD_SALT || 10);
-        this.password = await bcrypt.hash(this.password, saltRounds);
-    }
-});
-
 // Map the field id in the interface with _id field of mongoose
 userSchema.virtual('id').get(function () {
     return this._id;
